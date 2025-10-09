@@ -205,6 +205,7 @@ proc createDisplay*(i2c_i: var I2cInst, width: uint8, height: uint8, address: ui
     )
 
     # TODO enum-ify those magic numbers
+    # TODO `address` goes here, right?
     let startup = [
         SET_DISP.uint8,
         SET_DISP_CLK_DIV.uint8,
