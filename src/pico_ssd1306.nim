@@ -157,23 +157,24 @@ proc drawCircle*(disp: var Display, point: Point, radius: uint, antialias_steps:
         disp.drawPixel(round(x).uint, y1)
         disp.drawPixel(round(x).uint, y2)
 
-proc drawChar*(disp: var Display, point: Point, c: char) =
-    let (height, width) = (oled_5x7.height, oled_5x7.width)
-    let c_index = oled_5x7.lookup.find(c) * 5
+proc drawChar*(disp: var Display, point: Point, c: char, font: Font = oled_5x7) =
+    let (height, width) = (font.height, font.width)
+    let c_index = font.lookup.find(c) * 5
     for w in 0..width - 1:
         # each byte is a column of 7 pixels
-        var line = oled_5x7.data[c_index.uint + w]
+        var line = font.data[c_index.uint + w]
         for y in point.y..point.y + height:
             if (line and 1) > 0:
                 disp.drawPixel((point.x + w.uint, y))
             # scan over vertical column
             line = line shr 1
 
-proc drawString*(disp: var Display, point: Point, s: string) =
+proc drawString*(disp: var Display, point: Point, s: string, spacing: int = 1, font: Font = oled_5x7) =
     var x = point.x
+    let true_spacing = max(-5, spacing)
     for c in s:
-        disp.drawChar((x, point.y), c)
-        x += 6
+        disp.drawChar((x, point.y), c, font)
+        x = (x.int + true_spacing).uint
 
 proc drawImage*(disp: var Display, data: seq[byte], point: Point, width: uint, height: uint) =
     var (w, h) = (0.uint, 0.uint)
@@ -203,6 +204,7 @@ proc createDisplay*(i2c_i: var I2cInst, width: uint8, height: uint8, address: ui
         buffer: newSeq[byte](bufsize)
     )
 
+    # TODO enum-ify those magic numbers
     let startup = [
         SET_DISP.uint8,
         SET_DISP_CLK_DIV.uint8,

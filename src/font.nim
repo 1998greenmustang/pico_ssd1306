@@ -1,10 +1,17 @@
-type font* = object
+type Font* = object
   width*: uint
   height*: uint
   data*: array[520, uint8]
   lookup*: array[102, char]
-  
-let oled_5x7* = font(
+
+# Taken from
+#   https://github.com/lynniemagoo/oled-font-pack/tree/master
+# There are other fonts if you want to add
+# Also the vowels with the : on top don't work in nim?
+# so i removed those (in the lookup table)
+#
+# TODO: remove lookup table...thats so lazy
+let oled_5x7* = Font(
   width: 5,
   height: 7,
   data: [
