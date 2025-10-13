@@ -22,23 +22,23 @@ iterator items(range: AntialiasedLine): float =
         i += step_val
 
 type SetConstants* = enum 
-    SET_CONTRAST = 0x81
-    SET_ENTIRE_ON = 0xA4
-    SET_NORM_INV = 0xA6
-    SET_DISP = 0xAE
     SET_MEM_ADDR = 0x20
     SET_COL_ADDR = 0x21
     SET_PAGE_ADDR = 0x22
     SET_DISP_START_LINE = 0x40
+    SET_CONTRAST = 0x81
+    SET_CHARGE_PUMP = 0x8D
     SET_SEG_REMAP = 0xA0
+    SET_ENTIRE_ON = 0xA4
+    SET_NORM_INV = 0xA6
     SET_MUX_RATIO = 0xA8
+    SET_DISP = 0xAE
     SET_COM_OUT_DIR = 0xC0
     SET_DISP_OFFSET = 0xD3
-    SET_COM_PIN_CFG = 0xDA
     SET_DISP_CLK_DIV = 0xD5
     SET_PRECHARGE = 0xD9
+    SET_COM_PIN_CFG = 0xDA
     SET_VCOM_DESEL = 0xDB
-    SET_CHARGE_PUMP = 0x8D
 
 type Display* = object
     i2c_i*: I2cInst 
@@ -88,6 +88,8 @@ proc setContrast*(disp: var Display, contrast: uint8) =
 proc invert*(disp: var Display, invert: uint8) =
     disp.write(SET_NORM_INV.uint8 or (invert and 1))
 
+proc clear*(disp: var Display) =
+    disp.buffer = newSeq[byte](disp.bufsize)
     
 proc drawPixel*(disp: var Display, x: uint, y: uint, col: uint = 1) =
     if x >= disp.width or y >= disp.height: return
