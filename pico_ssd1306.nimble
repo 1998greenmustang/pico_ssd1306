@@ -3,11 +3,11 @@
 version       = "0.1.0"
 author        = "jeron"
 description   = "ssd1306 driver for pico in embedded nim"
-license       = "MIT"
+license       = "GNU LGPLv3"
 srcDir        = "src"
 
 
 # Dependencies
 
-requires "nim >= 2.2.4"
+requires "nim >= 1.6.0"
 requires "https://github.com/EmbeddedNim/picostdlib >= 0.3.4"
